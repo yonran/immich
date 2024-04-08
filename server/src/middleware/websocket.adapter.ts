@@ -13,7 +13,10 @@ export class WebSocketAdapter extends IoAdapter {
   createIOServer(port: number, options?: ServerOptions): any {
     const server = super.createIOServer(port, options);
     const pool = (this.app.get(DataSource).driver as PostgresDriver).master;
-    server.adapter(createAdapter(pool));
+    // don't make a pg_notify statement (which triggers a write to disk) every 5s
+    // https://github.com/immich-app/immich/issues/2128
+    // https://github.com/immich-app/immich/discussions/5989
+    server.adapter(createAdapter(pool, { heartbeatInterval: 2 * 60 * 60 * 1000, heartbeatTimeout: (2 * 60 + 2) * 60 * 1000 }));
     return server;
   }
 }
