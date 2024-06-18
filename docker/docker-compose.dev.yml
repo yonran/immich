@@ -27,11 +27,11 @@ services:
       target: dev
     restart: unless-stopped
     volumes:
-      - ../server:/usr/src/app/server
-      - ../open-api:/usr/src/app/open-api
-      - ${UPLOAD_LOCATION}/photos:/data
-      - ${UPLOAD_LOCATION}/photos/upload:/data/upload
-      - /usr/src/app/server/node_modules
+      - ../server:/usr/src/app
+      - ../open-api:/usr/src/open-api
+      - ${UPLOAD_LOCATION}:/data
+      - ${UPLOAD_LOCATION}/upload:/data/upload
+      - /usr/src/app/node_modules
       - /etc/localtime:/etc/localtime:ro
     env_file:
       - .env
