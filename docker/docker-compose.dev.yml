@@ -82,7 +82,9 @@ services:
     env_file:
       - .env
     ports:
-      - 3000:3000
+      # - 3000:3000
+      # change to 3001 since grafana is already using 3000
+      - 3001:3000  # 3000 is web port, 2283 is api port. https://github.com/immich-app/immich/pull/14256
       - 24678:24678
     volumes:
       - ..:/usr/src/app
