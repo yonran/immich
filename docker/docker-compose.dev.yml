@@ -144,6 +144,8 @@ services:
       POSTGRES_USER: ${DB_USERNAME}
       POSTGRES_DB: ${DB_DATABASE_NAME}
       POSTGRES_INITDB_ARGS: '--data-checksums'
+      # Uncomment the DB_STORAGE_TYPE: 'HDD' var if your database isn't stored on SSDs
+      DB_STORAGE_TYPE: 'HDD'
     volumes:
       - ../../pgdata:/var/lib/postgresql/data
       # - ${UPLOAD_LOCATION}/postgres:/var/lib/postgresql/data
