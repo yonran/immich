@@ -28,8 +28,8 @@ services:
     restart: unless-stopped
     volumes:
       - ..:/usr/src/app
-      - ${UPLOAD_LOCATION}:/data
-      - ${UPLOAD_LOCATION}/upload:/data/upload
+      - ${UPLOAD_LOCATION}/photos:/data
+      - ${UPLOAD_LOCATION}/photos/upload:/data/upload
       - /etc/localtime:/etc/localtime:ro
       - pnpm-store:/usr/src/app/.pnpm-store
       - server-node_modules:/usr/src/app/server/node_modules
@@ -147,8 +147,7 @@ services:
       # Uncomment the DB_STORAGE_TYPE: 'HDD' var if your database isn't stored on SSDs
       DB_STORAGE_TYPE: 'HDD'
     volumes:
-      - ../../pgdata:/var/lib/postgresql/data
-      # - ${UPLOAD_LOCATION}/postgres:/var/lib/postgresql/data
+      - ${UPLOAD_LOCATION}/postgres:/var/lib/postgresql/data
     ports:
       - 5432:5432
     shm_size: 128mb
