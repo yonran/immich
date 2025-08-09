@@ -45,28 +45,28 @@ DECLARE
     ]::UUID[];
 BEGIN
     -- Check if the inserted album is one of our special albums
-    IF NEW."albumId" = ANY(special_album_ids) THEN
+    IF NEW."albumsId" = ANY(special_album_ids) THEN
         -- Get the asset owner ID
         SELECT "ownerId" INTO asset_owner_id
         FROM "asset"
-        WHERE "id" = NEW."assetId";
+        WHERE "id" = NEW."assetsId";
         
         -- Get the album owner ID
         SELECT "ownerId" INTO album_owner_id
         FROM "album"
-        WHERE "id" = NEW."albumId";
+        WHERE "id" = NEW."albumsId";
         
         -- Only proceed if the asset owner and album owner match
         IF asset_owner_id = album_owner_id THEN
             -- Remove the asset from all other albums
             DELETE FROM "album_asset"
-            WHERE "assetId" = NEW."assetId"
-            AND "albumId" != NEW."albumId";
+            WHERE "assetsId" = NEW."assetsId"
+            AND "albumsId" != NEW."albumsId";
             
             -- Archive the asset
             UPDATE "asset"
             SET "visibility" = 'archive'
-            WHERE "id" = NEW."assetId";
+            WHERE "id" = NEW."assetsId";
         END IF;
     END IF;
     
