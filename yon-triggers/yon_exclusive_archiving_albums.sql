@@ -1,4 +1,6 @@
 
+-- Drop old trigger first (it references old table names that no longer exist)
+DROP TRIGGER IF EXISTS yon_exclusive_archiving_albums ON album_asset;
 
 CREATE OR REPLACE FUNCTION yon_exclusive_archiving_albums()
 RETURNS TRIGGER AS $$
@@ -43,28 +45,28 @@ DECLARE
     ]::UUID[];
 BEGIN
     -- Check if the inserted album is one of our special albums
-    IF NEW."albumsId" = ANY(special_album_ids) THEN
+    IF NEW."albumId" = ANY(special_album_ids) THEN
         -- Get the asset owner ID
         SELECT "ownerId" INTO asset_owner_id
-        FROM "assets"
-        WHERE "id" = NEW."assetsId";
+        FROM "asset"
+        WHERE "id" = NEW."assetId";
         
         -- Get the album owner ID
         SELECT "ownerId" INTO album_owner_id
-        FROM "albums"
-        WHERE "id" = NEW."albumsId";
+        FROM "album"
+        WHERE "id" = NEW."albumId";
         
         -- Only proceed if the asset owner and album owner match
         IF asset_owner_id = album_owner_id THEN
             -- Remove the asset from all other albums
-            DELETE FROM "albums_assets_assets"
-            WHERE "assetsId" = NEW."assetsId"
-            AND "albumsId" != NEW."albumsId";
+            DELETE FROM "album_asset"
+            WHERE "assetId" = NEW."assetId"
+            AND "albumId" != NEW."albumId";
             
             -- Archive the asset
-            UPDATE "assets"
+            UPDATE "asset"
             SET "visibility" = 'archive'
-            WHERE "id" = NEW."assetsId";
+            WHERE "id" = NEW."assetId";
         END IF;
     END IF;
     
@@ -73,6 +75,6 @@ END;
 $$ LANGUAGE plpgsql;
 
 CREATE TRIGGER yon_exclusive_archiving_albums
-AFTER INSERT ON "albums_assets_assets"
+AFTER INSERT ON "album_asset"
 FOR EACH ROW
 EXECUTE FUNCTION yon_exclusive_archiving_albums();
