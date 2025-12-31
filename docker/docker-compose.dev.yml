@@ -28,7 +28,8 @@ services:
     restart: unless-stopped
     volumes:
       - ..:/usr/src/app
-      - ${UPLOAD_LOCATION}/photos:/data
+      - ${UPLOAD_LOCATION}:/data
+      - ${UPLOAD_LOCATION}/upload:/data/upload
       - /etc/localtime:/etc/localtime:ro
       - pnpm-store:/usr/src/app/.pnpm-store
       - server-node_modules:/usr/src/app/server/node_modules
