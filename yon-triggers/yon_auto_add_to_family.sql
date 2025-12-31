@@ -17,7 +17,7 @@ BEGIN
         -- Only proceed if the asset owner matches the album owner
         IF NEW."ownerId" = album_owner_id THEN
             -- Add the asset to the Lakewood Bumblebees album
-            INSERT INTO "album_asset" ("albumsId", "assetsId")
+            INSERT INTO "album_asset" ("albumId", "assetId")
             VALUES (lakewood_album_id, NEW."id");
             
             -- Archive the asset
@@ -37,12 +37,12 @@ BEGIN
         ) OR EXISTS (
             -- Check if asset owner is an editor of the album
             SELECT 1 FROM "album_user"
-            WHERE "albumsId" = 'c3e845fd-8bbd-4c9d-968f-c6535e73e477'
-            AND "usersId" = NEW."ownerId"
+            WHERE "albumId" = 'c3e845fd-8bbd-4c9d-968f-c6535e73e477'
+            AND "userId" = NEW."ownerId"
             AND "role" = 'editor'
         ) THEN
             -- Insert the new asset into the specified album
-            INSERT INTO "album_asset" ("albumsId", "assetsId")
+            INSERT INTO "album_asset" ("albumId", "assetId")
             VALUES ('c3e845fd-8bbd-4c9d-968f-c6535e73e477', NEW."id");
         END IF;
     END IF;

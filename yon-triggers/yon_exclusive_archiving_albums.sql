@@ -45,31 +45,31 @@ DECLARE
     ]::UUID[];
 BEGIN
     -- Check if the inserted album is one of our special albums
-    IF NEW."albumsId" = ANY(special_album_ids) THEN
+    IF NEW."albumId" = ANY(special_album_ids) THEN
         -- Get the asset owner ID
         SELECT "ownerId" INTO asset_owner_id
         FROM "asset"
-        WHERE "id" = NEW."assetsId";
-        
+        WHERE "id" = NEW."assetId";
+
         -- Get the album owner ID
         SELECT "ownerId" INTO album_owner_id
         FROM "album"
-        WHERE "id" = NEW."albumsId";
-        
+        WHERE "id" = NEW."albumId";
+
         -- Only proceed if the asset owner and album owner match
         IF asset_owner_id = album_owner_id THEN
             -- Remove the asset from all other albums
             DELETE FROM "album_asset"
-            WHERE "assetsId" = NEW."assetsId"
-            AND "albumsId" != NEW."albumsId";
-            
+            WHERE "assetId" = NEW."assetId"
+            AND "albumId" != NEW."albumId";
+
             -- Archive the asset
             UPDATE "asset"
             SET "visibility" = 'archive'
-            WHERE "id" = NEW."assetsId";
+            WHERE "id" = NEW."assetId";
         END IF;
     END IF;
-    
+
     RETURN NEW;
 END;
 $$ LANGUAGE plpgsql;
